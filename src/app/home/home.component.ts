@@ -15,45 +15,26 @@ import {HousingService} from '../housing.service';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  readonly baseUrl = 'https://angular.dev/assets/images/tutorials/common';
   
   housingService: HousingService = inject(HousingService);
+  housingLocationList: HousingLocation[] = [];
+  filteredLocationList: HousingLocation[] = [];
 
   constructor() {
-    this.housingLocationList = this.housingService.getAllHousingLocations();
+    this.housingService.getAllHousingLocations().then((housingLocationList: HousingLocation[]) => {
+      this.housingLocationList = housingLocationList;
+      this.filteredLocationList = housingLocationList;
+    });
   }
 
-  housingLocationList: HousingLocation[] = [
-    {
-      id: 1,
-      name: 'Test Home',
-      city: 'Test city',
-      state: 'ST',
-      photo: `${this.baseUrl}/example-house.jpg`,
-      availableUnits: 99,
-      wifi: true,
-      laundry: false,
-    },
-    {
-      id: 2,
-      name: 'Test Home',
-      city: 'Test city',
-      state: 'ST',
-      photo: `${this.baseUrl}/example-house.jpg`,
-      availableUnits: 99,
-      wifi: true,
-      laundry: false,
-    },
-    {
-      id: 3,
-      name: 'Test Home',
-      city: 'Test city',
-      state: 'ST',
-      photo: `${this.baseUrl}/example-house.jpg`,
-      availableUnits: 99,
-      wifi: true,
-      laundry: false,
+  filterResults(text: string) {
+    if (!text) {
+      this.filteredLocationList = this.housingLocationList;
+      return;
     }
-  ];
+    this.filteredLocationList = this.housingLocationList.filter((housingLocation) =>
+      housingLocation?.city.toLowerCase().includes(text.toLowerCase()),
+    );
+  }
 
 }
